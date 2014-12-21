@@ -183,3 +183,37 @@ A module allows us to group reusable code into one place. We use modules in our 
 
   my_obj = MyClass.new
 #+END_SRC
+
+** Classes and Objects - Part 1
+
+*** States and Behaviors
+- We use classes to create objects.
+- We usually focus on /states/ and /behaviors/.
+- States track attributes for individual objects.
+- Behaviors include anything that objects do.
+- Instance variables store behaviors in classes, and states in objects.
+
+
+Using the *GoodDog* class from before, we could create new *GoodDog* objects: "Fido" and "Sparky," each with different characteristics, like name, weight, age, or height. We can use *instance variables* to store these chracteristics.
+
+*It's important to remember that instance variable are scoped at the object or instance level, and they are the mechanism for tracking object states.*
+
+Because both "Fido" and "Sparky" are objects of the same *GoodDog* class, they share the same behaviors. For example, they can both run, bark, and fetch. These behaviors are stored as instance variable in the class, so they are available to all objects of that class (through inheritance).
+
+*** Initializing a New Object
+Using the same *GoodDog* class, we'll remove the old functionality and start over, by adding a new *initialize* method.
+
+#+BEGIN_SRC ruby
+  # good-dog.rb
+
+  class GoodDog
+    def initialize
+      puts "This object was initilized!"
+    end
+  end
+
+  sparky = GoodDog.new
+#+END_SRC
+
+The *initiliaze* method gets called every time we create a new object.
+
