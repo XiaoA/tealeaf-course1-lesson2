@@ -153,15 +153,33 @@ human_object = HumanBeing.new
 
 #+END_SRC
 
-*** Author's solution:
+*** Authors' solution:
 We create an object by defining a class and instantiating it by using the .new method to create an instance, also known as an object.
 
-#+BEGIN_EXAMPLE ruby
+#+BEGIN_SRC ruby
 class MyClass
 end
 
 my_obj = MyClass.new
-#+END_EXAMPLE
+#+END_SRC
 
+*** Problem 2
+What is a module? What is its purpose? How do we use them with our classes? Create a module for the class you created in exercise 1 and include it properly.
 
+*** Solution 2
+Modules allow programmers to encapsulate behaviors and mix them into classes. Modules encourage *polymorphism*, by allowing the same data to be reused in different places, in different forms.
 
+*** COMMENT Authors' solution:
+
+A module allows us to group reusable code into one place. We use modules in our classes by using the *include* reserved word, followed by the module name. Modules are also used as a namespace.
+
+#+BEGIN_SRC ruby
+  module Study
+  end
+
+  class MyClass
+    include Study
+  end
+
+  my_obj = MyClass.new
+#+END_SRC
