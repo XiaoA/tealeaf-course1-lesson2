@@ -241,5 +241,87 @@ Using the same *GoodDog* class, we'll remove the old functionality and start ove
   sparky = GoodDog.new
 #+END_SRC
 
-The *initiliaze* method gets called every time we create a new object.
+The *initiliaze* method gets called every time we create a new object. As the authors [[http://www.gotealeaf.com/books/oo_ruby/read/classes_and_objects_part1#initializinganewobject][explain]],
+"In the above example, instantiating a new GoodDog object triggered the initialize method and resulted in the string being outputted. We refer to the initialize method as a constructor, because it gets triggered whenever we create a new object."
 
+*** Instance Variables
+The next example creates a new object and instantiates it with a new state (name).
+
+#+BEGIN_SRC ruby
+  # good_dog.rb
+
+  class GoodDog
+    def intialize(name)
+      @name = name
+    end
+  end
+
+#+END_SRC
+
+The *@name* variable is an *instance variable*. Instance Varialbles:
+- exists for as long as the object instance exists
+- is a way to link data to objects
+- does not "die" after the instance method is run
+- *track information about the /state/ of an object*
+
+In the example above, the initialize method takes a paramter, *name*. Using the *new* method to pass the argument *"Sparky"* through the initialize method, we can create a new object, using the *GoodDog* class we've just created:
+
+#+BEGIN_SRC ruby
+sparky = GoodDog.new("Sparky")
+#+END_SRC
+
+Within the constructor (i.e., the *initialize* method, the *@name* instance method is set to *name*, and the string "Sparky" is assigned to the *@name* instance variable.
+
+In the example above, "Sparky" is the state of the @name instance variable. Another dog, like 'Fido' would indicate a different object state. Every object state is unique, and they are stored in instance variables.
+
+*** Instance Methods
+Let's give our *GoodDog* class more functionality:
+
+#+BEGIN_SRC ruby
+
+  # good_dog.rb
+
+  class GoodDog
+    def initialize(name)
+      @name = name
+    end
+
+    def speak
+      "Arf!"
+    end
+  end
+
+  sparky = GoodDog.new("Sparky")
+  puts sparky.speak
+
+  fido = GoodDog.new("Fido")
+  puts fido.speak
+
+#+END_SRC
+
+We can also use string interpolation to change our *speak* method:
+
+#+BEGIN_SRC ruby
+
+  # good_dog.rb
+
+  class GoodDog
+    def initialize(name)
+      @name = name
+    end
+
+    def speak
+      "#{name} says Arf!"
+    end
+  end
+
+  sparky = GoodDog.new("Sparky")
+  puts sparky.speak
+
+  fido = GoodDog.new("Fido")
+  puts fido.speak
+#+END_SRC
+
+*** Accessor Methods
+
+If we tried to print out only Sparky's name, we'd get a *NoMethodError: unefined method* error, which means that the method doesn't exist, or is not available to the object. 
