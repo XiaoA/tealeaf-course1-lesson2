@@ -1,8 +1,9 @@
-#+TITLE: Andrew's Tealeaf Lesson Two Notes
++TITLE: Andrew's Tealeaf Lesson Two Notes
 #+AUTHOR: Andrew Buckingham
 #+STARTUP: indent
 #+OPTIONS: num:nil
 #+OPTIONS: html-postamble:nil
+#+OPTIONS: ^:nil
 #+TODO: TODO(t) | Started(s) | Waiting(w) | Canceled(c) | DONE(d)(@) | Questions(q) | Note(n)
 
 
@@ -324,4 +325,176 @@ We can also use string interpolation to change our *speak* method:
 
 *** Accessor Methods
 
-If we tried to print out only Sparky's name, we'd get a *NoMethodError: unefined method* error, which means that the method doesn't exist, or is not available to the object. 
+If we tried to print out only Sparky's name, we'd get a *NoMethodError: unefined method* error, which means that the method doesn't exist, or is not available to the object. For example: 
+
+#+BEGIN_SRC ruby
+puts sparky.name
+#+END_SRC
+
+But because the *name* method is not available to the *sparky* object, we'd get an error similar to this:
+
+#+BEGIN_SRC ruby
+NoMethodError: undefined method `name' for #<GoodDog:0x007f91821239d0 @name="Sparky">
+#+END_SRC
+
+As the authors [[http://www.gotealeaf.com/books/oo_ruby/read/classes_and_objects_part1#initializinganewobject][explain]], 
+
+"If we want to access the object's name, which is stored in the @name instance variable, we have to create a method that will return the name. We can call it get_name, and its only job is to return the value in the @name instance variable."
+
+#+BEGIN_SRC ruby
+  #good_dog.rb
+
+  class GoodDog
+    def initialize(name)
+      @name = name
+    end
+
+    def get_name
+      @name
+    end
+
+    def speak
+      "#{@name} says arf!"
+    end
+  end
+
+  sparky = GoodDog.new("Sparky")
+  puts sparky.speak
+  puts sparky.get_name
+
+#+END_SRC
+
+Now that we've added the *get_name* method, it should return the value of the *@name* instance variable.  
+
+And here is the result:
+
+#+BEGIN_SRC sh
+Sparky says arf!
+Sparky
+#+END_SRC
+
+That worked, and we now have a /getter/ method. But what if, for example, we wanted to change *sparky*'s name? In that case, we'd need to use a /setter/ method:
+
+#+BEGIN_SRC ruby
+  # good_dog.rb
+
+  class GoodDog
+    def intialize(name)
+      @name = name
+    end
+
+    def get_name
+      @name
+    end
+
+    def set_name=(name)
+      @name = name
+    end
+
+    def speak
+      "#{@name} says arf!"
+    end
+  end
+
+  sparky = GoodDog.new("Sparky")
+  puts sparky.speak
+  puts sparky.get_name
+  sparky.set_name = "Spartacus"
+  puts sparky.get_name
+
+#+END_SRC
+
+And the output would like like this:
+
+#+BEGIN_SRC sh
+Sparky says arf!
+Sparky
+Spartacus
+#+END_SRC
+
+Ruby provides special syntatical sugar for the /setter/ method. Instead of the "normal" syntax we might expect, 
+
+#+BEGIN_SRC ruby
+sparky.set_name=("Spartacus")
+
+#+END_SRC
+
+We can simply type:
+
+#+BEGIN_SRC ruby
+sparky.set_name = "Spartacus"
+#+END_SRC
+
+Rubyists usually want to set the /getter/ and /setter/ names to match the instance variables they expose/set. We can refactor our code to reflect this convention:
+
+#+BEGIN_SRC ruby
+
+  # good_dog.rb
+
+  class GoodDog
+    def initialize(name)
+      @name = name
+    end
+
+    def name   # This was renamed from "get_name"
+      @ name
+    end
+
+    def name=(n)  # This was renamed from "set_name"
+      @name = n
+    end
+
+    def speak
+      "#{@name} says arf!"
+    end
+  end
+
+  sparky = GoodDog.new("Sparky")
+  puts sparky.speak
+  puts sparky.name  # => "Sparky"
+  sparky.name = "Spartacus"
+  puts sparky.net  # => "Spartacus"
+
+#+END_SRC
+
+The /getter/ and /setter/ methods above take up a lot of room. And if we had more states to define, it would take even more code. Fortunately, Ruby has a built-in way to automatically create these /getter/ and /setter/ methods for us, using the *attr_accessor* method!
+
+Here is an example, refactoring the example above:
+
+#+BEGIN_SRC ruby
+  # good_dog.rb
+
+  class GoodDog
+    attr_accessor :name
+
+    def initialize(name)
+      @name = name
+    end
+
+    def speak
+      "#{name} says arf!"
+    end
+  end
+
+  sparky = GoodDog.new("Sparky")
+  puts sparky.speak
+  puts sparky.name  # => "Sparky"
+  sparky.net = "Spartacus"
+  puts sparky.name  # => "Spartacus"
+
+#+END_SRC
+
+The output for this program is the same! The *attr_accessor* method takes a symbol as an argument, and uses that to create the method name for the *getter* and *seter* methods. 
+
+To create only a *getter* method, without the *setter* method, use *attr_reader* instead.
+
+To create on a *setter* method, without the *getter* method, use the *attr_writer* method.
+
+You can add as many states as you want to any of the *attr_** methods, by simply adding more symbols. For example:
+
+#+BEGIN_SRC ruby
+attr_accessor :name, :height, :weight
+#+END_SRC
+
+The authors [[http://www.gotealeaf.com/books/oo_ruby/read/classes_and_objects_part1#initializinganewobject][warn]]:
+/Side note: Don't confuse this with attr_accessible, which is a Rails concept. attr_accessor is part of Ruby and exposes getter and setter methods for objects. attr_accessible is a Rails 3 and earlier way of white-listing attributes for mass-assignment; it has since been replaced by strong_parameters in Rails 4./
