@@ -498,3 +498,26 @@ attr_accessor :name, :height, :weight
 
 The authors [[http://www.gotealeaf.com/books/oo_ruby/read/classes_and_objects_part1#initializinganewobject][warn]]:
 /Side note: Don't confuse this with attr_accessible, which is a Rails concept. attr_accessor is part of Ruby and exposes getter and setter methods for objects. attr_accessible is a Rails 3 and earlier way of white-listing attributes for mass-assignment; it has since been replaced by strong_parameters in Rails 4./
+
+** Accessor Methods in Action
+The *getter* and *setter* methods provide us with a way to expose and change the state of an object. We can also use these methods within the class as well. 
+
+In the previous example, the *speak* method referenced the *@name* instance variable, like this:
+
+#+BEGIN_SRC ruby
+  def speak
+    "#{@name} says arf!"
+  end
+#+END_SRC
+
+Here, we're referencing the *@name* instance variable, but it's usually better to call the /getter/ method instead. Because we have created the *name* getter method along with the *attr_accessor*, we can reference *name* rather than the instance variable (@name):
+
+#+BEGIN_SRC ruby
+  def speak
+    "#{name} says arf!"
+  end
+#+END_SRC
+
+Referencing the *getter* method allows us to keep our code simpler. This can make it easier do things like make changes, refactor, or obfuscate data.
+
+
