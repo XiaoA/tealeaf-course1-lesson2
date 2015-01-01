@@ -701,3 +701,50 @@ Create a class called MyCar. When you initialize a new instance or object of the
   civic.current_speed
 
 #+END_SRC
+
+*** Problem 2
+Add an accessor method to your MyCar class to change and view the color of your car. Then add an accessor method that allows you to view, but not modify, the year of your car.
+
+*** Solution 2
+*File:* classes_and_objects_1/exercise2.rb
+#+BEGIN_SRC ruby :tangle classes_and_objects_1/exercise2.rb
+
+  class MyCar
+
+    attr_accessor :color
+    attr_reader :year
+
+    def initialize(year, model, color)
+      @year = year
+      @model = model
+      @color = color
+      @current_speed = 0
+    end
+
+    def speed_up(number)
+      @current_speed += number
+      puts "You hit the gas and accelerate #{number} MPH."
+    end
+
+    def brake(number)
+      @current_speed -= number
+      puts "You hit the brakes and slow down #{number} MPH."
+    end
+
+    def current_speed
+      puts "You're now going #{current_speed} MPH."
+    end
+
+    def shut_down
+      @current_speed = 0
+      puts "Let's park!"
+    end
+  end
+
+  civic = MyCar.new(2014, 'honda civic', 'brown')
+  puts civic.color
+  civic.color = "blue"
+  puts civic.color
+  puts civic.year
+
+#+END_SRC
