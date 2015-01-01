@@ -801,3 +801,31 @@ And here's the result:
 小A曰:ruby exercise3.rb
 You painted your car blue? It looks like new!
 #+END_SRC
+
+** Classes and Objects II
+
+*** Class Methods
+Until now, all of the methods we've created have been instance methods. These methods relate to the instance or object of a class. *Class methods* can be called directly on the class itself, without needing to be instatiated first. 
+
+When we define a class method, we prepend the method name with the reserved word *self*.
+
+For example:
+
+#+BEGIN_SRC ruby
+  # good_dog.rb
+  # ... the the rest of the code has been ommitted
+
+  def  self.what_am_i    # Class method definition
+    "I'm a GoodDog class!"
+  end
+#+END_SRC
+
+To call a class method, we can prepend the name of the class to the method, without instantiating any objects, like this:
+
+#+BEGIN_SRC ruby
+GoodDog.what_am_i    # => I'm a GoodDog class!
+#+END_SRC
+
+Class methods are useful in situations where we want to add functonality that is not related to individual objects. Because objects have states, if we have a method that does not need to deal with states, we can simply use a class method. We'll see more practical examples in the next section.
+
+*** Class Variables
