@@ -829,3 +829,53 @@ GoodDog.what_am_i    # => I'm a GoodDog class!
 Class methods are useful in situations where we want to add functonality that is not related to individual objects. Because objects have states, if we have a method that does not need to deal with states, we can simply use a class method. We'll see more practical examples in the next section.
 
 *** Class Variables
+
+In the same way that instance variables capture information and behaviors related to specific instances of classes (i.e., objects), *class variables* perform the same duties for entire classes.
+
+To create a class variable, preceded the variable name with *@@*.
+
+#+BEGIN_SRC ruby
+  class GoodDog
+    @@number_of_dogs = 0
+
+    def initialize
+      @@ number_of_dogs += 1
+    end
+
+    def self.total_number_of_dogs
+      @@number_of_dogs
+    end
+  end
+
+  puts GoodDog.total_number_of_dogs   # => 0
+
+  dog1 = GoodDog.new
+  dog2 = GoodDog.new
+
+  puts GoodDog.total_number_of_dogs   # => 2
+#+END_SRC
+
+Here's a description of what's happening:
+- *@@number_of_dogs* is a class variable, initialized to 0.
+- *@@number_of_dogs* is incremented by 1 via the contructor (the *initialize* method).
+- Every time we instantiate a new method (e.g., 'dog1 = GoodDog.new'), *initialize* is called. (Note that *initialize* is an instance method, and class methods can be called within instance methods).
+- We return the value of the class variable in the class method *self.totla_number_of_dogs* (we use a class variable and a class method to track class-level details that pertain to class, and not to individual objects).
+
+*** Constants
+Predictably, class contants are variables that never change, and are defined with a capital letter at the beginning of the variable name. Rubyists usually capitalize the whole word, but only the first letter is mandatory.
+
+#+BEGIN_SRC ruby
+  class GoodDog
+    DOG_YEARS = 7
+
+    attr_accessor :name, :age
+
+    def initialize(n, a)
+      self.name = n
+      self.age = a * DOG_YEARS
+    end
+  end
+
+  sparky = GoodDog.new("Sparky", 4)
+  puts sparky.age             # => 28
+#+END_SRC
