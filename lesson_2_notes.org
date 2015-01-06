@@ -879,3 +879,177 @@ Predictably, class contants are variables that never change, and are defined wit
   sparky = GoodDog.new("Sparky", 4)
   puts sparky.age             # => 28
 #+END_SRC
+
+Here's what's happening:
+1. The *DOG_YEARS* constant calculates the age of the object *sparky* in dog years.
+2. The *attr_accessor* method provides the *@name* and *@age* instance methods, and provides corresponding /getter/ and /setter/ methods.
+3. The *initialize* method's /setter/ method allows us to initialize the instance methods.
+4. the *age* getter method allows us to retrive the objects's value.
+
+*** The to_s Method
+
+Using the built-in *to_s* method to inspect the *sparky* object that we've just created, we might get something like this:
+
+#+BEGIN_SRC ruby
+puts sparky      # => #<GoodDog:0x007fe542323320>
+#+END_SRC
+
+Because the *puts* method automatically calls *to_s* on its argument, the output here is the same as *puts sparky.to_s*.
+
+We can test this by creating a custom *to_s* method on the *GoodDog* class to override the built-in method.
+
+#+BEGIN_SRC ruby
+
+  class GoodDog
+    DOG_YEARS = 7
+
+    attr_accessor :name, :age
+
+    def initialize(n, a)
+      self.name = n
+      self.age = a * DOG_YEARS
+    end
+
+    def to_s
+      "This dog's name is #{name} and it is #{age} in dog years."
+    end
+  end
+#+END_SRC
+
+The output has now changed:
+
+#+BEGIN_SRC ruby
+puts sparky      # => This dog's name is Sparky and is 28 in dog years.
+#+END_SRC
+
+The *to_s* method:
+- is automatically called when using *puts*
+- is automatically called in string interpolation
+
+For example:
+
+#+BEGIN_SRC sh
+irb(main):001:0> array = [1, 2, 3]
+array = [1, 2, 3]
+=> [1, 2, 3]
+irb(main):002:0> x = 5
+x = 5
+=> 5
+irb(main):003:0> "The #{array} array doesn't include #{x}."
+"The #{array} array doesn't include #{x}."
+=> "The [1, 2, 3] array doesn't include 5."
+#+END_SRC
+
+What if we try to use string interpolation on the *sparky* object?
+
+#+BEGIN_SRC sh
+irb(main):004:0> "#{sparky}"
+=> "This dog's name is Sparky and is 28 in dog years."
+#+END_SRC
+
+*Knowing that to_s is called when using puts or for string interpolation is very important for understanding and writing better OO code.*
+
+*** More about self
+
+*self* helps us designate a certain scope for our program. It can mean different things, in different contexts. According to the [[http://www.gotealeaf.com/books/oo_ruby/read/classes_and_objects_part2][authors]]:
+
+For example, so far we've seen two clear use cases for self:
+
+    Use *self* when calling setter methods from within the class. In our earlier example we showed that *self* was necessary in order for our *change_info* method to work properly. We had to use *self* to allow Ruby to disambiguate between initializing a local variable and calling a setter method. While not required, it's also a good idea to prepend *self* when calling all instance methods from within the class, not only for setter methods.
+
+    Use *self* for class method definitions.
+
+We can test this out:
+#+BEGIN_SRC ruby
+  class GoodDog
+    attr_accessor :name, :height, :weight
+
+    def initialize(n, h, w)
+      self.name = n
+      self.height = h
+      self.weight = w
+    end
+
+    def change_info(n, h, w)
+      self.name = n
+      self.height = h
+      self.weight = w
+    end
+
+    def info
+      "#{self.name} weighs #{self.weight} and is #{self.height} tall."
+    end
+  end
+#+END_SRC
+
+We're using *self* whenever we call an instance method from within the class. But what exactly does *self* represent? To find out, we can add another instance method...
+
+#+BEGIN_SRC ruby
+  # good_dog.rb
+
+  class GoodDog
+
+    attr_accessor :name, :height, :weight
+
+    def initialize(n, h, w)
+      self.name = n
+      self.height = h
+      self.weight = w
+    end
+
+    def change_info(n, h, w)
+      self.name = n
+      self.height = h
+      self.weight = w
+    end
+
+    def info
+      "#{self.name} weighs #{self.weight} and is #{self.height} tall."
+    end
+
+    def what_is_self
+      self
+    end
+  end
+#+END_SRC
+
+And if we instantiate a new *GoodDog* object and inspect it:
+
+#+BEGIN_SRC ruby
+irb(main):029:0> sparky = GoodDog.new('Sparky', '12 inches', '10 lbs')
+sparky = GoodDog.new('Sparky', '12 inches', '10 lbs')
+=> #<GoodDog:0x007fdc73264448 @name="Sparky", @height="12 inches", @weight="10 lbs">
+
+irb(main):030:0> p sparky
+p sparky
+#<GoodDog:0x007fdc73264448 @name="Sparky", @height="12 inches", @weight="10 lbs">
+=> #<GoodDog:0x007fdc73264448 @name="Sparky", @height="12 inches", @weight="10 lbs">
+
+irb(main):031:0> puts sparky
+puts sparky
+#<GoodDog:0x007fdc73264448>
+=> nil
+
+irb(main):032:0> p sparky.what_is_self
+p sparky.what_is_self
+#<GoodDog:0x007fdc73264448 @name="Sparky", @height="12 inches", @weight="10 lbs">
+=> #<GoodDog:0x007fdc73264448 @name="Sparky", @height="12 inches", @weight="10 lbs">
+
+#+END_SRC
+
+From within a class, when an instance method calls *self*, it returns the /calling method/, which in this case is the *sparky* object. From within the *change_info* method, calling *self.name=* is the same as calling *sparky.name=*. 
+
+We also use the *self* method to define class methods:
+
+#+BEGIN_SRC ruby
+  class MyAwesomeClass
+    def self.this_is_a_class_method
+    end
+  end
+#+END_SRC
+
+*self*, when inside a class but outside an instance method, actually refers to the class itself. So prefixing a method definition with *self* is the same as defining a method on the class. (i.e., *def self.a_method* == *def GoodDog.a_method*)
+
+Within a class:
+
+
