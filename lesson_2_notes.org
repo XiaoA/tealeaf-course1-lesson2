@@ -1151,7 +1151,37 @@ Override the to_s method to create a user friendly print out of your object.
   puts civic # => "My car is a brown, 2014, Honda Civic."
 #+END_SRC
 
+*** Exercise 3
+When running the following code...
 
+#+BEGIN_SRC ruby
+  class Person
+    attr_reader :name
+    def initialize(name)
+      @name = name
+    end
+  end
+
+  bob = Person.new("Steve")
+  bob.name = "Bob"
+#+END_SRC
+
+We get the following error...
+
+#+BEGIN_SRC ruby
+test.rb:9:in `<main>': undefined method `name=' for
+  #<Person:0x007fef41838a28 @name="Steve"> (NoMethodError)
+#+END_SRC
+
+Why do we get this error and how to we fix it?
+
+*** Solution 3
+*File:* [[classes_and_objects_2/exercise3.md]]
+#+BEGIN_SRC markdown :tangle classes_and_objects_2/exercise3.md
+We get the error because the program use **attr_reader**, which creates a getter method, but not a setter method. But at the end, the program tries to set Bob's name.
+
+To fix this, change **attr_reader** to **attr_writer** if you don't need the getter method, or set it to **attr_accessor** if you'd like to have both a getter and a setter method for the @name instance variable.
+#+END_SRC
 
 
 
