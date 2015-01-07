@@ -1052,4 +1052,7 @@ We also use the *self* method to define class methods:
 
 Within a class:
 
+1. Inside instance methods, *self* references the calling object (the instance/object that called the method). *self.weight=* is equivalent to *sparky.weight=* in the example above.
+2. Outside instance methods, *self* references the class, and can define class mehods. *def self.name=(n)* euivalent to *def GoodDog.name=(n)* in the example above.
 
+Self allows us to explicitly reference things, as well as reveal the intended behavior. It's very important to pay attention to whether *self* is in an instance method or not, as it changes meaning, based on scope.
