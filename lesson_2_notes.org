@@ -1183,8 +1183,90 @@ We get the error because the program use **attr_reader**, which creates a getter
 To fix this, change **attr_reader** to **attr_writer** if you don't need the getter method, or set it to **attr_accessor** if you'd like to have both a getter and a setter method for the @name instance variable.
 #+END_SRC
 
+** Inheritance
+
+Inheritance allows us to extract shared behavior from classes, and move it to a superclass. Inheritance allows us to keep our logic in one place, which makes our code better organized.
+
+*** Class Inheritance
+Extracting the *speak* method from the *GoodDog* class into a new *Animal* class allows us to make that behavior available to both the *GoodDog* and *Cat* classes.
+
+#+BEGIN_SRC ruby
+  # good_dog_class.rb
+
+  class Animal
+    def speak
+      "Hello!"
+    end
+  end
+
+  class GoodDog < Animal
+  end
+
+  class Cat < Animal
+  end
+
+  sparky = GoodDog.new
+  paws = Cat.new
+  puts spark.speak      # => Hello!
+  puts paws.speak       # => Hello!
+
+#+END_SRC
+
+Both the *Cat* and *GoodDog* classes inherit the *speak* method. But we can override the speak method in subclasses. For example, we can add the original *speak* method back into *GoodDog*:
+
+#+BEGIN_SRC ruby
+  # good_dog_class.rb
+
+  class Animal
+    def speak
+      "Hello!"
+    end
+  end
+
+  class GoodDog < Animal
+    attr_accessor :name
+
+    def initialize(n)
+      self.name = n
+    end
+
+    def speak
+      "#{self.name} says arf!"
+    end
+  end
+
+  class Cat < Animal
+  end
+
+  sparky = GoodDog.new("Sparky")
+  paws = Cat.new
+
+  puts sparky.speak       # => Sparky says arf!
+  puts paws.speak         # => Hello!
+#+END_SRC
+
+*** super
+
+*super* is a built-in function in ruby that allows us to call methods up the inheritance hierarchy. By calling *super* from inside a method, you instruct Ruby to search the inheritance hierarchy for a method of the same name. When it finds it, it invokes it. Here's an example:
+
+#+BEGIN_SRC ruby
+  class Animal
+    def speak
+      "Hello!"
+    end
+  end
+
+  class GoodDog < Animal
+    def speak
+      super + " from GoodDog class"
+    end
+  end
+
+  spearky = GoodDog.new
+  sparky.speak           # => "Hello! from GoodDog class"
+#+END_SRC
 
 
+In this case, invoking *super* in the *GoodDog* class  allows us to call the *speak* class from the superclass (*Animal*), and then append a new string.
 
-
-
+Another common way to use *super* is with *initialize*. For example:
