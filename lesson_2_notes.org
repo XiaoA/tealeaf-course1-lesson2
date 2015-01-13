@@ -1332,6 +1332,156 @@ By extracting common methods to a superclass, we can simplify our code and model
 
 #+END_SRC
 
+However, as our programs grow in complexity, we face a new problem. We don't want to repeat our code in different classes, but when some subclasses do not share the same behavior, we cannot add it to the superclass.
+
+Modules provide a way to abstract behavior, which can then be mixed in to the appropriate classes. Taking the example above, if we wanted to add in a *swim* method to the *Fish* and *Dog* classes only, we could create a module, and add them to those classes, like this:
+
+#+BEGIN_SRC ruby
+  module Swimmable
+    def swim
+      "I'm swimming!"
+    end
+  end
+
+  class Animal; end
+
+  class Fish < Animal
+    include Swimmable          # mixing in the Swimmable module
+  end
+
+  class Mammal < Animal
+  end
+
+  class Cat < Mammal
+  end
+
+  class Dog < Mammal
+    include Swimmable          # mixing in the Swimmable module
+  end
+#+END_SRC
+
+Result:
+#+BEGIN_SRC ruby
+sparky = Dog.new
+neemo  = Fish.new
+paws   = Cat.new
+
+sparky.swim                 # => I'm swimming!
+neemo.swim                  # => I'm swimming!
+paws.swim                   # => NoMethodError: undefined method `swim' for 
+
+#<Cat:0x007fc453152308>
+#+END_SRC
 
 
+/Note: using the prefix '~able' to describe actions, as in the 'Swimmable' example above, is a common Ruby convention./
 
+*** Inheritance vs. Modules
+
+Here are some guidelines for choosing between inheritance and modules:
+
+- Classes can only be the subclass of one superclass. But you can mix in as many modules as you want.
+- For 'is-a' relationshiops: choose class inheritance. For 'has-a' relationship, modules are the better choice. For example: a dog 'is an' animal (class inheritance; Dog < Animal), and a dog "has an" ability to swim (Swimmable module).
+- Modules can't be instantiated, so they cannot be used to create objects. Modules are only used for namespacing and grouping common methods together.
+
+*** Method Lookup Path
+We can use inheritance and mixins to view the hierarchy of classes are looked up when a method is called:
+
+#+BEGIN_SRC ruby
+  module Walkable
+    def walk
+      "I'm walking."
+    end
+  end
+
+  module Swimmable
+    def swim
+      "I'm swimming."
+    end
+  end
+
+  module Climbable
+    def climb
+      "I'm climbing."
+    end
+  end
+
+  class Animal
+    include Walkable
+
+    def speak
+      "I'm an animal, and I speak!"
+    end
+  end
+#+END_SRC
+
+There are three modules and one class here. One of the modules (*Walkable*) has been mixed into the *Animal* class. We can use the *ancestors* class method to trace the method lookup path:
+
+#+BEGIN_SRC ruby
+puts "---Animal method lookup---"
+puts Animal.ancestors
+#+END_SRC
+
+Here's the output:
+
+#+BEGIN_SRC sh
+---Animal method lookup---
+Animal
+Walkable
+Object
+Kernel
+BasicObject
+#+END_SRC
+
+When Ruby finds the appropriate method in the current class, it looks no futher:
+
+#+BEGIN_SRC ruby
+fido = Animal.new
+fido.speak                  # => I'm an animal, and I speak!
+#+END_SRC
+
+If the method is not found in the current class, it will go up the chain, until it finds the method, and execute it.
+
+#+BEGIN_SRC ruby
+fido.walk                   # => I'm walking.
+#+END_SRC
+
+If Ruby traverses all the classes and modules in the method lookup list, and doesn't find it, it throws an error:
+
+#+BEGIN_SRC ruby
+fido.swim
+  # => NoMethodError: undefined method `swim' for #<Animal:0x007f92832625b0>
+#+END_SRC
+
+What if we add another class, that inherits from the *Animal* class, and mixes in the *Swimmable* and *Climbable* modules?
+
+#+BEGIN_SRC ruby
+  class GoodDog < Animal
+    include Swimmable
+    include Climbable
+  end
+
+puts "---GoodDog method lookup---"
+puts GoodDog.ancestors
+#+END_SRC
+
+Here's the output:
+
+#+BEGIN_SRC sh
+---GoodDog method lookup---
+GoodDog
+Climbable
+Swimmable
+Animal
+Walkable
+Object
+Kernel
+BasicObject
+#+END_SRC
+
+A few things to note about the output:
+- The order in which we include modules is important. Ruby looks at the last module included /first/. (If we included two or more modules with methods that had the same name, the last module included would be referenced first.)
+- The moduled included in the superclass made it into the method lookup path. (Thus, all *GoodDog* objects will have access to *Walkable* and any other modules mixed in to its superclasses, in addition the *Animal* superclass.)
+- Understanding the method lookup list is essential for large, complicated projects.
+
+*** More Modules
