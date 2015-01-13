@@ -1,3 +1,4 @@
+
 +TITLE: Andrew's Tealeaf Lesson Two Notes
 #+AUTHOR: Andrew Buckingham
 #+STARTUP: indent
@@ -1288,5 +1289,49 @@ Another common way to use *super* is with *initialize*. For example:
   end
 
   bruno = GoodDog.new("brown")       => #<GoodDog:0x007fb40b1e6718 @color="brown", @name="brown">
+#+END_SRC
+In this example, using *super* allows us to forward the arguments from the class where its called (the subclass) up to the superclass and invoke them.
+
+
+When *super* is called with arguments, the arguments are passed up the method lookup chain:
+
+#+BEGIN_SRC ruby
+  class BadDog < Animal
+    def initialize(age, name)
+      super(name)
+      @age = age
+    end
+  end
+
+  BadDog.new(2, "bear")   => #<BadDog:0x007fb40b2beb68 @age=2, @name="bear">
+#+END_SRC
+
+In this example, argument *name* is passed by up to the superclass and set to the *@name* instance variable.
+
+*** Mixing in Modules
+Modules offer another way to follow the DRY principle in Ruby.
+
+By extracting common methods to a superclass, we can simplify our code and model concepts that follow a natural hierarchy. For example, we can extract the shared, common behavior of the *Cat* and *Dog* classes we've made into a new *Mammal* class, and add a *Fish* class outside the mammal class:
+
+#+BEGIN_SRC ditaa :file inheritance/animal_classes.png :cmdline -r
+            +----------+
+            |  Animal  |
+            +----++----+
+                 ||             
+       +---------/\-----------+     
+       |                      |     
+  +----+----+            +----+---+ 
+  |  Fish   |            | Mammal |     
+  +---------+            +---+-+--+ 
+                             | |    
+                             | |    
+                             | |    
+                 +-------+   | |   +-------+
+                 |  Cat  +---/ \---+  Dog  |
+                 +-------+         +-------+
 
 #+END_SRC
+
+
+
+
