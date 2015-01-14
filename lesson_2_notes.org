@@ -1485,3 +1485,76 @@ A few things to note about the output:
 - Understanding the method lookup list is essential for large, complicated projects.
 
 *** More Modules
+In addtiton to allowing us to mix shared behavior into classes, modules can be used for two other purposes:
+
+1. Namespacing
+2. Module Methods (i.e., containers for methods)
+
+**** Namespacing
+Namespacing allows us to organize similar classes under a module. Not only does this make it easier to recognize related classes in our code, but it lowers the chances of having similarly named classes collide in our code.
+
+Here's how it works:
+
+#+BEGIN_SRC ruby
+  class Mammal
+    class Dog
+      def speak(sound)
+        p "#{sound}"
+      end
+    end
+
+    class Cat
+      def say_name(name)
+        p "#{name}"
+      end
+    end  
+#+END_SRC
+
+You can call classes in a module by appending the class name to the module name with two colons (::)
+
+#+BEGIN_SRC ruby
+  buddy = Mammal::Dog.new
+  kitty = Mammal::Cat.new
+  buddy.speak('Arf!')          # => "Arf!"
+  kitty.say_name('kitty')      # => "kitty"
+#+END_SRC
+
+Modules can also serve as *containers* for methods, called *module methods*. Using modules to house methods can be very useful for methods that don't seem to fit anywhere else within the code. 
+
+For example:
+
+#+BEGIN_SRC ruby
+  module Mammal
+    class Dog
+      def speak(sound)
+        p "#{sound}"
+      end
+    end
+
+    class Cat
+      def say_name(name)
+        p "#{name}"
+      end
+    end
+
+    # adding a module method:
+
+    def self.some_out_of_place_method(num)
+      num ** 2
+    end
+  end
+#+END_SRC
+
+Modules methods can be called directly from the module:
+
+#+BEGIN_SRC ruby
+value - Mammal.some_out_of_place_method(4)
+#+END_SRC
+
+Or they can be called with double colons:
+
+#+BEGIN_SRC ruby
+value = Mammal::some_out_of_place_method(4)
+#+END_SRC
+
+Though both are possible, the former method (calling them directly) is the perferred way.
