@@ -1558,3 +1558,203 @@ value = Mammal::some_out_of_place_method(4)
 #+END_SRC
 
 Though both are possible, the former method (calling them directly) is the perferred way.
+
+*** Private, Protected, and Public
+*Public Methods* 
+- Are available to anyone who knows either the class name or the objects name.
+- Available for the rest of the program to uses, and comprise the class's /interface/ with other classes and objects.
+
+*Private Methods*
+- Work within the class, but don't need to be available to the rest of the program.
+- Defined with the reserved word *private*. Everything below this word is private, unless negated by another reserved word.
+
+Looking at the *GoodDog* class we've made, the *Dog Years* method could be moved into private method, to protect it from being used by other classes (Measuring dog years for a fish wouldn't make most sense, in mose cases!).
+
+We can refactor the logic:
+
+#+BEGIN_SRC ruby
+  class GoodDog
+    DOG_YEARS = 7
+
+    attr_accessor :name, :age
+
+    def initialize(n, a)
+      self.name = n
+      self.age = a * DOG_YEARS
+    end
+
+    private
+
+    def human_years
+      self.age / DOG_YEARS
+    end
+  end
+
+  sparky = GoodDog.new("Sparky", 4)
+  sparky.human_years
+#+END_SRC
+
+This produces the following error message:
+
+#+BEGIN_SRC sh
+NoMethodError: private method `human_years' called for
+  #<GoodDog:0x007f8f431441f8 @name="Sparky", @age=28>
+#+END_SRC
+
+The *human_years* method is private, but we couldn't call it here, because private methods can only be accessed by other methods in the class (i.e., it can't be called by an object, like 'sparky' in the example above). Private methods are invoked by other methods in the same class. For example:
+
+#+BEGIN_SRC ruby
+  # assume the method definition below is above the "private" keyword
+
+  def public_disclosure
+    "#{self.name} in human years is #{human_years}"
+  end
+#+END_SRC
+
+*Keypoints:*
+- We cannot use *self.human_years*, because *human_years* is a private class, and private classes can only be invoked by other methods in the same class. (*self.human_years* == *sparky.human_years*. Objects can't access private methods.
+- We can only use *human_years*. (Private methods are only accessible within the class, when called without *self*.
+
+*** Protected Methods
+Although public and private methods are most common, protected methods provide an "in-between" approach, which can be useful in some cases. 
+
+*Keypoints:*
+- Protected methods are designated by the *protected* keyword, just as *private* designates private methods.
+- From /outside/ the class, *protected* methods act the same as *private* methods.
+- From /inside/ the class, *protected* methods can be accessed just like *public* methods.
+
+Examples:
+
+#+BEGIN_SRC ruby
+  class Animal
+    def a_public_method
+      "Will this work? " + self.a_protected_method
+    end
+
+    protected
+
+    def a_protected_method
+      "Yes, I'm protected!"
+    end
+  end
+#+END_SRC
+
+When we test it, it works:
+
+#+BEGIN_SRC ruby
+fido = Animal.new
+fido.a_public_method        # => Will this work? Yes, I'm protected!
+#+END_SRC
+
+So we can call a *protected* method from within the class, even when prepended with *self*.
+
+However, if we try this outside of the class, Ruby throws an error:
+
+#+BEGIN_SRC ruby
+  fido.a_protected_method
+  # => NoMethodError: protected method `a_protected_method' called for
+  #<Animal:0x007fb174157110>
+#+END_SRC
+
+Remember that we can't call protected methods from outside the class, per the second rule. These rules apply within the context of inheritance, as well.
+
+*** Accidental Method Overriding
+Because every class we create in Ruby is a subclass of the *Object* class, every class inherits many critical, built-in methods.
+
+#+BEGIN_SRC ruby
+  class Parent
+    def say_hi
+      p "Hi from Parent."
+    end
+  end
+
+  parent.superclass            # => Object
+#+END_SRC
+
+But it also means that a subclass method can override a superclass's method.
+
+#+BEGIN_SRC ruby
+  class Child < Parent
+    def say_hi
+      p "Hi from Child."
+    end
+  end
+
+  child = Child.new
+  child.say_hi                 # => "Hi from Child."
+#+END_SRC
+
+Accidentally overriding *Object* methods can cause serious problems. For example, the *send* instance method is inherited from all classes that inherit from *Object*. If you were to define a new *send* method in a subclass, it would override the built-in *send* class.
+
+The Object *send* method provides a means to call a method, by passing it a symbol or string, which represents the method you want to call. 
+
+Let's see how *send* normally works:
+
+#+BEGIN_SRC ruby
+  son = Child.new
+  son.send :say_hi     # => "Hi from Child."
+#+END_SRC
+
+Now, let's define a new send method, and invoke it:
+
+#+BEGIN_SRC ruby
+  class Child
+    def say_hi
+      p "Hi from Child."
+    end
+
+    def send
+      p "send from Child..."
+    end
+
+  end
+
+  lad = Child.new
+  lad.send :say_hi
+#+END_SRC
+
+As we saw in the previous example, using *Object* send, we'd expect to see the output, "Hi from Child." But actually, we get:
+
+#+BEGIN_SRC sh
+  ArgumentError: wrong number of arguments (1 for 0)
+  from (pry):12:in `send'
+#+END_SRC
+
+Note that we're passing an argument to *send*, even though our overriden *send* subclass method does not take any arguments.
+
+
+Another example...
+
+Object's *instance_of? method returns *true* if an object is an instance of a given class, and *false* if it is not. Here's how it works:
+
+#+BEGIN_SRC ruby
+  c = Child.new
+  c.instance.of? Child     # => true
+  c.instance.of? Parent    # => false
+#+END_SRC
+
+And if we override *instance_of?* within *Child*:
+
+#+BEGIN_SRC ruby
+  class Child
+    # other methods omitted
+
+    def instance_of?
+      p "I am a fake instance"
+    end
+  end
+
+  heir = Child.new
+  heir.instance_of? Child
+#+END_SRC
+
+And once again, we get a nasty surprise when we try to call Object's *instance_of?* method:
+
+#+BEGIN_SRC sh
+  ArgumentError: wrong number of arguments (1 for 0)
+  from (pry):22:in `instance_of?'
+#+END_SRC
+
+The one *Object* instance method that is easily overriden, without major side effects, is the *to_s* method. Overriding it can be useful when you want a different string representation of an object.
+
+It's a good idea to become familiar with common *Object* methods, so that you don't accidentally override them.
