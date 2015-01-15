@@ -1758,3 +1758,67 @@ And once again, we get a nasty surprise when we try to call Object's *instance_o
 The one *Object* instance method that is easily overriden, without major side effects, is the *to_s* method. Overriding it can be useful when you want a different string representation of an object.
 
 It's a good idea to become familiar with common *Object* methods, so that you don't accidentally override them.
+
+** Exercises
+
+*** Exercise 1
+Create a superclass called Vehicle for your MyCar class to inherit from and move the behavior that isn't specific to the MyCar class to the superclass. Create a constant in your MyCar class that stores information about the vehicle that makes it different from other types of Vehicles.
+
+Then create a new class called MyTruck that inherits from your superclass that also has a constant defined that separates it from the MyCar class in some way.
+
+*** Solution 1
+*File*: [[inheritance/exercise1.rb]]
+#+BEGIN_SRC ruby :tangle inheritance/exercise1.rb
+  # inheritance/exercise1.rb
+  class Vehicle
+    attr_accessor :color
+    attr_reader :year
+    attr_reader :model
+
+    def initialize(year, model, color)
+      @year = year
+      @model = model
+      @color = color
+      @current_speed = 0
+    end
+
+    def self.gas_mileage(gallons, miles)
+      puts "#{miles / gallons} MPG"
+    end
+
+    def speed_up(number)
+      @current_speed += number
+      puts "You push the gas and accelerate #{number} MPH."
+    end
+
+    def brake(number)
+      @current_speed -= number
+      puts "You hit the brakes and slow down #{number} MPH."
+    end
+
+    def current_speed
+      puts "You're now going #{current_speed} MPH."
+    end
+
+    def shut_down
+      @current_speed = 0
+      puts "Let's park!"
+    end
+  end
+
+  class MyCar < Vehicle
+    NUMBER_OF_DOORS = 4
+
+    def to_s
+      "My car is a #{self.color}, #{self.year}, #{@model}."
+    end
+  end
+
+  class MyTruck < Vehicle
+    NUMBER_OF_DOORS = 2
+
+    def to_s
+      "My truck is a #{self.color}, #{self.year}, #{@model}."
+    end
+#+END_SRC
+
