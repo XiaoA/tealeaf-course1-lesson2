@@ -2316,3 +2316,32 @@ puts "Well done!" if joe.better_grade_than?(bob)
   puts "True or false...Bob's grade is better than Joe's?"
   puts bob.better_grade_than?(joe)
 #+END_SRC
+
+*** Exercise 8
+Given the following code...
+
+#+BEGIN_SRC ruby
+bob = Person.new
+bob.hi
+#+END_SRC
+
+And the corresponding error message...
+
+#+BEGIN_SRC sh
+NoMethodError: private method `hi' called for #<Person:0x007ff61dbb79f0>
+from (irb):8
+from /usr/local/rvm/rubies/ruby-2.0.0-rc2/bin/irb:16:in `<main>'
+#+END_SRC
+
+What is the problem and how would you go about fixing it?
+
+*** Solution 8
+*File:* [[inheritance/exercise8.md]]
+#+BEGIN_SRC md
+'hi' is a Private method. 
+
+There are two ways to fix this. 
+
+1. Make the private 'hi' method a public method.
+2. Create a public method that references the private method.
+#+END_SRC
