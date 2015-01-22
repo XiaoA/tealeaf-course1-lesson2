@@ -2274,3 +2274,45 @@ Write a method called age that calls a private method to calculate the *age* of 
   puts truck.age
 
 #+END_SRC
+
+*** Exercise 7
+Create a class 'Student' with attributes *name* and *grade*. Do NOT make the grade getter public, so *joe.grade* will raise an error. Create a *better_grade_than?* method, that you can call like so...
+
+#+BEGIN_SRC ruby
+puts "Well done!" if joe.better_grade_than?(bob)
+#+END_SRC
+
+*** Solution 7
+*File:* [[inheritance/exercise7.rb]]
+#+BEGIN_SRC ruby :tangle inheritance/exercise7.rb
+  # inheritance/exercise7.rb
+
+  class Student
+
+    attr_accessor :name, :grade 
+
+    def initialize(name, grade)
+      @name = name
+      @grade = grade
+    end
+
+    def better_grade_than?(classmate)
+      grade > classmate.grade
+    end
+
+    protected
+
+    def grade
+      @grade
+    end
+  end
+
+  joe = Student.new("Joe", 94)
+  bob = Student.new("Bob", 87)
+
+  puts "True or false...Joe's grade is better than Bob's?"
+  puts joe.better_grade_than?(bob)
+  puts "==="
+  puts "True or false...Bob's grade is better than Joe's?"
+  puts bob.better_grade_than?(joe)
+#+END_SRC
