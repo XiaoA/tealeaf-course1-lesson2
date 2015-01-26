@@ -3165,3 +3165,89 @@ For the OO Blackjack game, we'll use the following nouns:
   Blackjack.new.run
 #+END_SRC
 
+* Object-Oriented Tic-Tac-Toe
+
+** Requirements
+The first step is to think about the specifications and requirements for the application, in plain English.
+
+This version will be a two-player game. In Japan, when people play Janken, they can play with more than two people, but in the US, it's usuaally limited to two people.
+- Player One
+- Computer
+
+There are three choices:
+1. Rock
+2. Paper
+3. Scissors
+
+There is a defined hierarchy of winner vs. loser:
+1. Rock > Scissors
+2. Paper > Rock
+3. Scissors > Paper
+4. Tie => Go again
+
+I'll need to record each player's choice, and determin who won, using the hierarchy defined above.
+
+** Implementation Ideas
+1. Classes
+   - Player
+   - Hand
+
+2. Game Play
+   - Each Player gets to choose
+   - The winner is announced
+   - Play again?
+
+3. Bonus Features I could implement
+   - Keeping Score
+   - Betting
+
+For the initial commit, I'll copy in this pseudo code, and create the two classes, *Player* and *Hand*.
+ 
+#+BEGIN_SRC ruby
+  # Requirements:
+  # The first step is to think about the specifications and requirements for the application, in plain English.
+
+  # This version will be a two-player game. In Japan, when people play Janken, they can play with more than two people, but in the US, it's usuaally limited to two people.
+  # - Player One
+  # - Computer
+
+  # There are three choices:
+  # 1. Rock
+  # 2. Paper
+  # 3. Scissors
+
+  # There is a defined hierarchy of winner vs. loser:
+  # 1. Rock > Scissors
+  # 2. Paper > Rock
+  # 3. Scissors > Paper
+  # 4. Tie => Go again
+
+  # I'll need to record each player's choice, and determin who won, using the hierarchy defined above.
+
+  # Implementation Ideas
+  # 1. Classes
+  # - Player
+  # - Hand
+
+  # 2. Game Play
+  # - Each Player gets to choose
+  # - The winner is announced
+  # - Play again?
+
+  # 3. Bonus Features I could implement (but probably won't for the sake of simplicity)
+  # - Keeping Score
+  # - Betting
+
+  class Player
+  end
+
+  class Hand
+    attr_accessor :paper, :rock, :scissors
+
+    def initialize(paper, rock, scissors)
+      @paper = paper
+      @rock = rock
+      @scissors = scissors
+    end
+  end
+#+END_SRC
