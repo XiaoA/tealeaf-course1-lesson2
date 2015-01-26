@@ -3251,3 +3251,32 @@ For the initial commit, I'll copy in this pseudo code, and create the two classe
     end
   end
 #+END_SRC
+
+So one of the things that I was thinking about was that I should have a Superclass for Player, and then subclasses for the human and computer players. I was thinking that would be too complicated, but I think it might be a good idea, so that I can differentiate player methods from computer methods.
+
+I'll create those classes, and add a *user_choice* method to the *HumanPlayer* class, and a *computer_choice* method to to the *ComputerPlayer* class:
+
+#+BEGIN_SRC ruby
+  class Person; end
+
+  class HumanPlayer < Player
+    def user_choice
+      user_choice = gets.chomp.downcase
+    end
+  end
+
+  class ComputerPlayer < Player
+    def computer_choice
+    end
+  end
+
+  class Hand
+    attr_accessor :rock, :paper, :scissors
+
+    def initialize(rock, paper, scissors)
+      @rock = rock
+      @paper = paper
+      @scissors = scissors
+    end
+  end
+#+END_SRC
