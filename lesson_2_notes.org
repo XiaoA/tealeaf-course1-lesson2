@@ -3318,4 +3318,42 @@ I'll need to add a class for the game to play out. I also noticed that my first 
   end
 #+END_SRC
 
+In the [[https://github.com/XiaoA/tealeaf-course1-week1/blob/master/rock_paper_scissors_v2.rb][procedural version]] I wrote for Lesson 1, I created a hash with a 'CHOICES' constant, which defined the three hand choices. I think I can use that again.
+
+#+BEGIN_SRC ruby
+  class Player
+  end
+
+  class HumanPlayer < Player
+    def user_choice
+      user_choice = gets.chomp.downcase
+    end
+  end
+
+  class ComputerPlayer < Player
+    def computer_choice
+    end
+  end
+
+  class Hand
+    attr_accessor :rock, :paper, :scissors
+
+    def initialize(rock, paper, scissors)
+      @rock = rock
+      @paper = paper
+      @scissor = scissor
+    end
+  end
+
+  class Game
+    CHOICES = {'r' => 'Rock', 'p' => 'Paper', 's' => 'Scissors' }
+    puts "Let's play 'Rock, Paper, Scissors!'"
+    # loop until there is a winner
+    # user_choice
+    # computer_choice
+    # check_for_winner
+    # declare winner
+    # play again?
+  end
+#+END_SRC
 
