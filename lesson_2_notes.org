@@ -8,6 +8,27 @@
 #+TODO: TODO(t) | Started(s) | Waiting(w) | Canceled(c) | DONE(d)(@) | Questions(q) | Note(n)
 
 
+
+* Assignment: Read OOP Tutorials
+Assignment: Read OOP Tutorials
+
+OOP is a huge topic, and we're trying to find the right balance of enough complexity so you can build a program, but not too much advanced topics to overwhelm. Review and do the exercises in the Object Oriented Programming section of our book: http://www.gotealeaf.com/books/oo_ruby
+
+This book is still in "beta" mode, and we're treating it as a "living document" so don't be shy about suggestions or improvements!
+
+Below are more tutorials around the internet that other students have found useful:
+
+A nice quick overview on OOP in Ruby (you can skip the sections on freeze and allocate):
+
+http://www.tutorialspoint.com/ruby/ruby_object_oriented.htm
+Another short, but useful tutorial
+
+part 1: http://zetcode.com/lang/rubytutorial/oop
+part 2: http://zetcode.com/lang/rubytutorial/oop2
+Codecademy's OOP track (look for the OO parts):
+
+http://www.codecademy.com/tracks/ruby
+
 * "Object Oriented Programming with Ruby"
 
 ** Objected Oriented Programming
@@ -2345,3 +2366,802 @@ There are two ways to fix this.
 1. Make the private 'hi' method a public method.
 2. Create a public method that references the private method.
 #+END_SRC
+
+* My notes from TutorialsPoint.com: Object Oriented Ruby
+I went throug the object-oriented tutorial at this URL, and followed along with all the of the exercises:
+http://www.tutorialspoint.com/ruby/ruby_object_oriented.htm
+
+However, I've redacted the code from this file, into a local file called *lesson2-gitignore.org*, in order to comply with tutorialspoint.com's copyright. The tutorial is freely available, feel free to visit the link, to see what it includes!
+* CodeAcademy Ruby Tutorials
+I don't like using the built-in browser editor on CodeAcedemy, because it indent properly, and it lacks a lot of Emacs goodness. For more involved coding practice, I first typed in Emacs, and then pasted into the browser.
+** Object-Oriented Programming I
+
+#+BEGIN_SRC ruby
+  class Language
+    def initialize(name, creator)
+      @name = name
+      @creator = creator
+    end
+
+    def description
+      puts "I'm #{@name} and I was created by #{@creator}!"
+    end
+  end
+
+  ruby = Language.new("Ruby", "Yukihiro Matsumoto")
+  python = Language.new("Python", "Guido van Rossum")
+  javascript = Language.new("Javascript", "Brendan Eich")
+
+  puts ruby.description
+  puts python.description
+  puts javascript.description                        
+#+END_SRC
+
+#+BEGIN_SRC ruby
+  class Computer
+    $manufacturer = "Mango Computer, Inc."
+    @@files = {hello: "Hello, World!"}
+
+    def initialize(username, password)
+      @username = username
+      @password = password
+    end
+
+    def current_user
+      @username
+    end
+
+    def self.display_files
+      @@files
+    end
+  end
+
+  # Make a new Computer instance
+  hal = Computer.new("Dave", 12345)
+
+  puts "Current user: #{hal.current_user}"
+  # @username belongs to the hal instance.
+
+  puts "Manufacturer: #{$manufacturer}"
+  # $manufacturer is global We can get it directly.
+
+  puts "Files: #{Computer.display_files}"
+  # @@files belongs to the Computer class.
+#+END_SRC
+
+Using a class veriable to keep track of the number of instances we've created:
+
+#+BEGIN_SRC ruby
+  class Person
+    # Set your class variable to 0 on line 3
+    @@people_count = 0
+
+    def initialize(name)
+      @name = name
+      # Increment your class variable on line 8
+      @@people_count += 1
+    end
+
+    def self.number_of_instances
+      # Return your class variable on line 13
+      @@people_count
+    end
+  end
+
+  matz = Person.new("Yukihiro")
+  dhh = Person.new("David")
+
+  puts "Number of Person instances: #{Person.number_of_instances}"
+#+END_SRC
+
+#+BEGIN_SRC ruby
+  class Computer
+    @@users = {}
+
+    def initialize(username, password)
+      @username = username
+      @password = password
+      @@users[username] = password
+      @files = {}
+    end
+
+    def create(filename)
+      time = Time.now
+    end
+
+    def Computer.get_users
+      return @@users
+    end
+  end
+
+  my_computer = Computer.new("Andrew", "drowssaP!")
+#+END_SRC
+
+#+BEGIN_SRC ruby
+  class Dog
+
+    def initialize(name, breed)
+      @name = name
+      @breed = breed
+    end
+
+    public
+
+    def bark
+      puts "Woof!"
+    end
+
+    private
+
+    def id
+      @id_number = 12345
+    end
+  end
+#+END_SRC
+
+However, it's a pain to have to write our own /setter/ methods:
+
+#+BEGIN_SRC ruby
+  # ...
+
+  # This step can be ommitted by using [attr_accessor, attr_writer, or attr_reader]
+  def name
+    @name
+  end
+
+  # ...
+#+END_SRC
+
+We can add *attr_writer* and *attr_reader* methods, and let Ruby set the variables for us:
+
+#+BEGIN_SRC ruby
+    class Person
+      
+      attr_reader :name
+      attr_reader :job
+      attr_writer :job
+
+      def initialize(name, job)
+        @name = name
+        @job = job
+      end
+    end
+#+END_SRC
+
+Of course, I already knew that the *attr_accessor* method includes but the /getter/ *(attr_reader)* and /setter/ *(attr_writer)* methods, so the next refactoring was not a surprise... :)
+
+#+BEGIN_SRC ruby
+  class Person
+
+    attr_reader :name
+    attr_accessor :job
+
+    def initialize(name, job)
+      @name = name
+      @job = job
+    end
+  end
+#+END_SRC
+
+"Whereas *include* mixes a module's methods in at the instance level (allowing instances of a particular class to use the methods), the extend keyword mixes a module's methods at the class level. This means that class itself can use the methods, as opposed to instances of the class."
+[[http://www.codecademy.com/courses/ruby-beginner-en-zfe3o/2/3?curriculum_id%3D5059f8619189a5000201fbcb][Source]]
+
+For example, in the following the class can access the mixed-in method, without instantiating an object, because we used *extend* rather than *include*:
+
+#+BEGIN_SRC ruby
+  # ThePresent has a .now method that we'll extend to TheHereAnd
+
+  module ThePresent
+    def now
+      puts "It's #{Time.new.hour > 12 ? Time.new.hour - 12 : Time.new.hour}:#{Time.new.min} #{Time.new.hour > 12 ? 'PM' : 'AM'} (GMT)."
+    end
+  end
+
+  class TheHereAnd
+    extend ThePresent
+  end
+
+  TheHereAnd.now
+
+#+END_SRC
+
+*** Banking on Ruby
+This is the model for the application I'll be building from scratch:
+
+#+BEGIN_SRC ruby
+class Account
+  attr_reader :name, :balance
+  def initialize(name, balance=100)
+    @name = name
+    @balance = balance
+  end
+  
+  def display_balance(pin_number)
+    puts pin_number == pin ? "Balance: $#{@balance}." : pin_error
+  end
+  
+  def withdraw(pin_number, amount)
+    if pin_number == pin
+      @balance -= amount
+      puts "Withdrew #{amount}. New balance: $#{@balance}."
+    else
+      puts pin_error
+    end
+  end
+  
+  private
+  
+  def pin
+    @pin = 1234
+  end
+  
+  def pin_error
+    "Access denied: incorrect PIN."
+  end
+end
+
+my_account = Account.new("Eric", 1_000_000)
+my_account.withdraw(11, 500_000)
+my_account.display_balance(1234)
+my_account.withdraw(1234, 500_000)
+my_account.display_balance(1234)
+
+#+END_SRC
+
+#+BEGIN_SRC ruby
+  class Account
+
+    attr_reader :name, :balance
+
+    def initialize(name, balance=100)
+      @name = name
+      @balance = balance
+    end
+
+    def display_balance(pin_number)
+      if @pin = pin?
+        puts "Balance = $#{@balance}."
+      else
+        puts pin_error
+      end
+    end
+
+    def withdraw(pin_number, amount)
+      if @pin = pin?
+        @balance -= amount
+        puts "Withdrew #{amount}. New balance: $#{@balance}"
+      else
+        puts pin_error
+      end
+    end
+
+    private
+
+    def pin
+      @pin = 1234
+    end
+
+    def pin_error
+      return "Access denied: incorrect PIN."
+    end
+  end
+
+  checking_account = Account.new("Andrew E. Buckingham", "29_000")
+#+END_SRC
+
+* Tealeaf Academy OOP Lecture, Part 1
+
+** OOP in Ruby
+*** Classes and Objects
+- Classes are the blueprints for objects
+- Classes are like the cookie cutter, and objects are the cookies
+  - Objects will share the same basic form with other objects created from the same class, but they might have different states.
+- methods contain behaviors
+  - behaviors == instance methods ("Instance methods encapsulate behaviors that we want for our objects. It (sic) is /defined/ in a class." - Chris Lee, from 0:21:09)
+- instance variables contain states
+- objects are instantiated from classes, and contain states and behaviors.
+- Class variables and methods
+- compared with procedural programming
+
+
+Example:
+#+BEGIN_SRC ruby
+  class Dog
+    def speak
+      puts "bark!"
+    end
+  end
+
+  teddy = Dog.new
+  teddy.speak
+
+  fido = Dog.new
+  fido.speak
+#+END_SRC
+
+At this point, there is no difference in state between *Dog* objects 'teddy' and 'fido'.
+
+When we initialize these objects, we can pass their names as paramters. But that will cause an error, unless we initialize the parameter 'name':
+
+#+BEGIN_SRC ruby
+  class Dog
+    def initialize(name)
+      @name = name
+    end
+
+    def speak
+      puts "bark!"
+    end
+  end
+
+  teddy = Dog.new('Teddy')
+  fido = Dog.new('Fido')
+
+  teddy.speak
+  fido.speak
+#+END_SRC
+
+*def intialize* provides the parameters that can be passed into objects, to define their states.
+
+It's a good idea to always be consistant with your methods, in terms of whether you use 'puts' or return. In the example, we changed the *speak* method to /return/ the string, which meant that when we called the instance method (e.g., *teddy.speak*), we need to prepend *puts*. Here's how that looks:
+
+#+BEGIN_SRC ruby
+  class Dog
+
+    def initialize(name, height, weight)
+      @name = name
+      @height = height
+      @weight = weight
+    end
+
+    def speak
+      @name + " barks!"
+    end
+
+    def get_name
+      @name
+    end
+
+    def set_name=(new_name)
+      @name = new_name
+    end
+    
+    def info
+      "#{@name} is #{@height} feet tall and weighs #{@weight} lbs."
+  end
+
+  # instantiate dog objects
+  teddy = Dog.new("Teddy", 3, 95)
+  fido = Dog.new("Fido", 1, 35)
+
+  puts teddy.speak
+  puts fido.speak
+  puts teddy.get_name
+  puts fido.get_name
+  puts teddy.info
+  puts fido.info
+
+  teddy.set_name = "Roosevelt" # This will change teddy's name to 'Roosevelt'.
+  puts teddy.info 
+#+END_SRC
+
+Here's a cool bit of Ruby syntatic sugar...When we create a 'setter', we can use either of the following:
+
+*Version 1*
+#+BEGIN_SRC ruby
+  # ...
+
+  def set_name=(new_name)
+    @name = new_name
+  end
+
+  # ...
+
+  teddy.set_name = "Roosevelt"
+
+#+END_SRC
+
+Or...
+
+#+BEGIN_SRC ruby
+  # ...
+
+  def get_name(new_name)
+    @name = new_name
+  end
+
+  # ...
+
+  teddy.set_name("Roosevelt")
+#+END_SRC
+
+The result will be the same.
+
+Also, we can abstract /getter/ methods and /setter/ methods:
+- *attr_reader* corresponds to /getter/ methods. Ruby will automatically create 'get' methods for us.
+- *attr_writer* corresponds to /setter/ methods. Ruby will automatically create 'set' methods for us.
+- *attr_access* will create both /getter/ and /setter/ methods for us.
+
+#+BEGIN_SRC ruby
+  class Dog
+
+    def initilialize(name, height, weight)
+      @name = name
+      @height = height
+      @weight = weight
+    end
+
+    def speak
+      @name + " barks!"
+    end
+
+    # We can remove the 'get_' from the getter method name
+    def name
+      @name
+    end
+
+    # We can remove the "set_' from the setter method name
+    def name=(new_name)
+      @name = new_name
+    end
+
+    def info
+      "#{@name} is #{@height} feet tall and weighs #{@weight} lbs."
+    end
+  end
+
+  teddy = Dog.new('Teddy', 3, 95)
+
+  puts teddy.name # => 'Teddy' (puts the 'getter' method)
+  teddy_name = "Roosevelt" # (this is the 'setter' method; the name is set to 'Roosevelt'.)
+  puts teddy.info
+#+END_SRC
+
+We can use the *attr_* methods to automatically create /getter/ and /setter/ methods:
+
+#+BEGIN_SRC ruby
+  class Dog
+    attr_accessor :name, :height, :weight
+
+    def initialize(name, height, weight)
+      @name = name
+      @height = height
+      @weight = weight
+    end
+
+    def speak
+      @name + " barks!"
+    end
+
+    # note that we no longer need to define name!
+
+    def info
+      "#{@name} is #{@height} feed tall and weighs #{@weight} lbs."
+    end
+  end
+
+  teddy = Dog.new('Teddy', 3, 95)
+
+  puts teddy.name # => "Teddy"
+  teddy.name = "Roosevelt"
+  puts teddy.name # => "Roosevelt"
+  puts teddy.height # => 3 feet tall
+  puts teddy.weight # => 95 lbs.
+#+END_SRC
+
+In fact, because *attr_accessor* has created the getter/setter methods, rather than call the instance methods directly from within other instance methods, we can call the getter/setter methods that reference the instance methods, like this:
+
+#+BEGIN_SRC ruby
+  # ...
+
+  def info
+    "#{name} is #{height} feet tall and weighs #{weight} lbs."
+  end
+
+  # ...
+#+END_SRC
+
+And now, we can add a new *update_info* method:
+
+#+BEGIN_SRC ruby
+  class Dog
+    attr_accessor :name, :height, :weight
+
+    def initialize(name, height, weight)
+      @name = name
+      @height = height
+      @weight = weight
+    end
+
+    def speak
+      @name + " barks!"
+    end
+
+    def info
+      "#{name} is #{height} feet tall and weighs #{weight} lbs."
+    end
+
+    # Adding another method. You must use 'self.' to let Ruby know you want to call the setter method, rather than set a local variable.
+    def update_info(name, height, weight)
+      self.name = name
+      self.height = height
+      self.weight = weight    
+    end
+  end
+
+  teddy = Dog.new('Teddy' 3, 95)
+  #fido = Dog.new('Fido', 1, 35)
+
+  puts teddy.info
+  teddy.update_update_info('Roosevelt', 5, 125)
+  puts teddy.info
+#+END_SRC
+
+
+In the video, he gave a good example of what a getter and a setter method might look like. Note the syntax for each:
+
+#+BEGIN_SRC ruby
+  # getter method
+  def ssn
+    #555-55-5555
+    "xxx-xx-" + @ssn.split('-').last
+  end
+
+  # setter method
+  def ssn=(new_ssn)
+    if valid_format?(new_ssn)
+      @ssn = new_ssn
+    end
+  end
+#+END_SRC
+
+The 'getter' method 'gets' the data, so that it can have an action performed on it. The 'setter' method sets/updates the variable(s).
+
+**** Class Variables
+- start with two '@@' symbols: @@count = 0
+- pertain to the class level, rather than at the object level
+- Cannonical example is tracking how many objects are created
+- instance methods should be wrapped in a 'def initilize' or 'def ...'; class variables can be anywhere (at the beginning) of the class definition
+
+Here is an example of adding a class variable (@@count) to the program, to add the ability to count the number of instantiated objects:
+
+#+BEGIN_SRC ruby
+  class Dog
+    @@count = 0
+
+    attr_accessor :name, :height, :weight
+
+    # Call Class Method
+    def self.total_dogs
+      "Total number of dogs: #{@@count}"
+    end
+      
+    def initialize(name, height, weight)
+      @name = name
+      @height = height
+      @weight = weight
+      @@count += 1
+    end
+
+    def speak
+      name + " barks!"
+    end
+
+    def info
+      "#{name} is #{height} feet tall and weighs #{weight} lbs."
+    end
+
+    def update_info(name, height, weight)
+      self.name = name
+      self.height = height
+      self.weight = weight
+    end
+  end
+
+  teddy = Dog.new('Teddy', 3, 95)
+  puts teddy.info
+
+  # Call Class Method (note the use of 'self')
+  puts  Dog.total_dogs
+#+END_SRC
+
+Chris reminded us that it's important not to see Rails code as "Rails magic," but rather just Ruby.
+For example:
+
+#+BEGIN_SRC ruby
+# ...
+
+User.all  # This is and example of calling a class method.
+user = User.new # This is and example of intantiating a new object.
+user.posts # This is and example of calling an instance method.
+
+#+END_SRC
+
+**** Procedural vs. OOP
+One thing that Chris mentioned really made me chuckle. He brought down an example of the source code from the previous Procedural Ruby Blackjack game we built in the first lesson, and he talked about how just making one slight change could cause a ripple effect of bugs and issues down the line. That's something I really struggled with, and one of the reasons I was looking forward to moving on to object-oriented Ruby programming.
+
+* Tealeaf Academy OOP Lecture, Part 2
+
+- inheritance
+
+#+BEGIN_SRC ruby
+  class Dog
+    attr_accessor :name
+
+    def initialize(name)
+      @name = name
+    end
+
+    def eat
+      "#{name} is eating."
+    end
+  end
+
+
+  class Cat
+    attr_accessor :name
+    
+    def initialize(name)
+      @name = name
+    end
+
+    def eat
+      "#{name} is eating."
+    end
+  end
+
+  teddy = Dog.new('Teddy')
+  puts teddy.name
+
+  kitty = Cat.new('Kitty')
+  puts kitty.name
+
+  puts teddy.eat
+  puts kitty.eat
+#+END_SRC
+
+In the code above, we've created two class, *Dog* and *Cat*. Both of these classes share behaviors, such as eating, sleeping, or running. These behaviors can be extracted into a superclass, to reduce the redundancy.
+
+#+BEGIN_SRC ruby
+  class Animal
+    attr_accessor :name
+
+    def initialize(name)
+      @name = name
+    end
+
+    def eat
+      #{name} is eating."
+    end
+
+    def speak
+      "#{name} is speaking!"
+    end
+    
+  end
+
+  class Mammal < Animal
+    def warm_blooded?
+      true
+    end
+  end
+
+  module Swimmable
+    def swim
+      "I'm swimming!"
+    end
+  end
+
+  # Note: In order to use this module, your class must respond to a 'name' method call.
+  module Fetchable
+    def fetch
+      "#{name} is playing fetch!"
+    end
+  end
+
+  class Dog < Mammal
+    include Swimmable
+    include Fetchable
+    
+    def speak
+      "#{name} is barking!"
+    end
+  end
+
+  class Cat < Mammal
+
+    def speak
+      "#{name} is meowing!"
+    end
+  end
+
+
+  teddy = Dog.new('Teddy')
+  puts teddy.name
+  puts teddy.eat
+  puts teddy.fetch
+  puts teddy.speak
+  puts teddy.swim
+
+  kitty = Cat.new('Kitty')
+  puts kitty.name
+  puts kitty.eat
+  puts kitty.speak
+#+END_SRC
+
+** Tips for Building games and apps in OOP
+1. Have detailed requirements or specifications in written form (pseudo code).
+2. Extract major nouns => classes
+3. Extract major verbs => instance methods
+4. Group instance methods into classes (this will take some practice)
+
+For example...
+
+For the OO Blackjack game, we'll use the following nouns:
+- card
+- deck
+- player
+- dealer
+
+#+BEGIN_SRC ruby
+  class Card
+  attr_accessor :suit, :value
+
+  def to_s
+    "This is the card! #{suit}, #{card}"
+  end
+   
+  def initialize (suit, value)
+    @suit = suit
+    @value = value
+  end
+
+  class Deck
+    attr_accessor :cards
+
+    def initialize(num_decks)
+      @cards = []
+      ['H', 'D', 'S', 'C']each.do |suit|
+      ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'].each do |face_value|
+        @cards << Card.new(suit, face_value)
+      end
+    end
+
+    def scramble
+      cards.shuffle!
+    end
+
+    def deal
+      cards.pop
+    end
+  end
+
+  class Player
+  end
+
+  class Dealer
+  end
+
+
+  class BlackJack
+    attr_accessor :player, :dealer, :deck
+
+    def initialize
+      @player = player.new
+      @dealer = dealer.new
+      @deck = deck.new
+    end
+
+    def run
+      deal_cards
+      show_flow
+      players.each do |player| # multiplayer functionality
+        player_turn(player)
+      end 
+      dealer_turn
+      who_won?
+    end
+  end
+  Blackjack.new.run
+#+END_SRC
+
