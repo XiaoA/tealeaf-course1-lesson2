@@ -3165,7 +3165,7 @@ For the OO Blackjack game, we'll use the following nouns:
   Blackjack.new.run
 #+END_SRC
 
-* Object-Oriented Tic-Tac-Toe
+* Object-Oriented Rock, Paper, Scissors (Janken)
 
 ** Requirements
 The first step is to think about the specifications and requirements for the application, in plain English.
