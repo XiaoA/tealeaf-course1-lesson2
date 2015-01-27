@@ -3357,3 +3357,44 @@ In the [[https://github.com/XiaoA/tealeaf-course1-week1/blob/master/rock_paper_s
   end
 #+END_SRC
 
+In Lesson One, I tried to really solve everything on my own, to the best of my ability. However, the teachers at Treehouse encourage us to lean on the 'lean on the solutions' more in the beginning. This also fits in well with my own theories of learning, especially Vgotsky's concept of the [[http://en.wikipedia.org/wiki/Zone_of_proximal_development][Zone of Proximal Development]], which describes how students learn to work independently through the active support and encouragement of their teachers.
+
+So I watched a few minutes of the video. I was glad to see that I seem to be off to a good start. And I realized that, unlike with lesson 1, where I was using global variables in a procedural game, I can have the same method name for both the computer and human player, but override it in each class, as necessary. I'll make that change here:
+
+#+BEGIN_SRC ruby
+  class Player
+  end
+
+  class HumanPlayer < Player
+    def hand_choice
+      hand_choice = gets.chomp.downcase
+    end
+  end
+
+  class ComputerPlayer < Player
+    def hand_choice
+    end
+  end
+
+  class Hand
+    attr_accessor :rock, :paper, :scissors
+
+    def initialize(rock, paper, scissors)
+      @rock = rock
+      @paper = paper
+      @scissor = scissor
+    end
+  end
+
+  class Game
+    CHOICES = {'r' => 'Rock', 'p' => 'Paper', 's' => 'Scissors' }
+    puts "Let's play 'Rock, Paper, Scissors!'"
+    # loop until there is a winner
+    # user_choice
+    # computer_choice
+    # check_for_winner
+    # declare winner
+    # play again?
+  end
+
+#+END_SRC
