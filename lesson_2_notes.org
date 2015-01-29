@@ -3803,10 +3803,6 @@ Here's what I came up with:
     def initialize(name)
       @name = name
     end
-
-    def to_s
-      puts "#{name} threw a #{hand}!"
-    end
   end
 
   class HumanPlayer < Player

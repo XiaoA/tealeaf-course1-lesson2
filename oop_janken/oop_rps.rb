@@ -42,10 +42,6 @@ class Player
   def initialize(name)
     @name = name
   end
-
-  def to_s
-    puts "#{name} threw a #{hand}!"
-  end
 end
 
 class HumanPlayer < Player
