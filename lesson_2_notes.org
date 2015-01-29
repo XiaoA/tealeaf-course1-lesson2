@@ -16,7 +16,7 @@ OOP is a huge topic, and we're trying to find the right balance of enough comple
 
 This book is still in "beta" mode, and we're treating it as a "living document" so don't be shy about suggestions or improvements!
 
-Below are more tutorials around the internet that other students have found useful:
+Below are more tutorials around the Internet that other students have found useful:
 
 A nice quick overview on OOP in Ruby (you can skip the sections on freeze and allocate):
 
@@ -35,13 +35,13 @@ http://www.codecademy.com/tracks/ruby
 
 *** Why Objected Oriented Programming? 
 *The Object Model*
-Objected-Oriented Programming (OOP) is a paradigm that allows developers to manipulate parts of a program, without causing errors throughout the rest of the program. It simplifies the process of creating complicated programs, by breaking a large codebase into many smaller and more manageable parts.
+Objected-Oriented Programming (OOP) is a paradigm that allows developers to manipulate parts of a program, without causing errors throughout the rest of the program. It simplifies the process of creating complicated programs, by breaking a large code base into many smaller and more manageable parts.
 
 *Encapsulation* allows programmers to protect data by hiding functionality from accidental manipulation. In Ruby, this accomplished by creating objects and methods that act upon these objects.
 
 *Polymorphism* is term that describes the way that data can be represented in different forms. One example of polymorphism in Ruby is in inheritance, where smaller *subclasses* inherit the behaviors of larger *superclasses*.
 
-Another example is in the use of *modules*. Modules, like classes, contain shared behavior. But you cannot create an obect with a module. Modules must be /mixed in/ with classes, using the reserved word *include*. This is called a *mixin*. Once a module has been mixed in, module functionality is available to the class and its objects.
+Another example is in the use of *modules*. Modules, like classes, contain shared behavior. But you cannot create an object with a module. Modules must be /mixed in/ with classes, using the reserved word *include*. This is called a *mixin*. Once a module has been mixed in, module functionality is available to the class and its objects.
 
 ** What are Objects?
 Rubyists often declare, "In Ruby, everything is an object!" Objects are declared from classes. If classes were molds, objects would be the things produced from the molds. Objects contain different data, but they are instances of the same class.
@@ -102,7 +102,7 @@ Note that the class method *new* returns an object.
 #+END_SRC
 
 ** Modules
-"A module is a collection of behaviors that is useable in other classes via mixins. A module is "mixed in" to a class using the include reserved word" ([[http://www.gotealeaf.com/books/oo_ruby/read/the_object_model][Source]]).
+"A module is a collection of behaviors that is usable in other classes via mixins. A module is "mixed in" to a class using the include reserved word" ([[http://www.gotealeaf.com/books/oo_ruby/read/the_object_model][Source]]).
 
 Modules allow us to share behaviors between classes. For example:
 
@@ -254,7 +254,7 @@ A module allows us to group reusable code into one place. We use modules in our 
 - Instance variables store behaviors in classes, and states in objects.
 
 
-Using the *GoodDog* class from before, we could create new *GoodDog* objects: "Fido" and "Sparky," each with different characteristics, like name, weight, age, or height. We can use *instance variables* to store these chracteristics.
+Using the *GoodDog* class from before, we could create new *GoodDog* objects: "Fido" and "Sparky," each with different characteristics, like name, weight, age, or height. We can use *instance variables* to store these characteristics.
 
 *It's important to remember that instance variable are scoped at the object or instance level, and they are the mechanism for tracking object states.*
 
@@ -268,14 +268,14 @@ Using the same *GoodDog* class, we'll remove the old functionality and start ove
 
   class GoodDog
     def initialize
-      puts "This object was initilized!"
+      puts "This object was initialized!"
     end
   end
 
   sparky = GoodDog.new
 #+END_SRC
 
-The *initiliaze* method gets called every time we create a new object. As the authors [[http://www.gotealeaf.com/books/oo_ruby/read/classes_and_objects_part1#initializinganewobject][explain]],
+The *initialize* method gets called every time we create a new object. As the authors [[http://www.gotealeaf.com/books/oo_ruby/read/classes_and_objects_part1#initializinganewobject][explain]],
 "In the above example, instantiating a new GoodDog object triggered the initialize method and resulted in the string being outputted. We refer to the initialize method as a constructor, because it gets triggered whenever we create a new object."
 
 *** Instance Variables
@@ -3396,5 +3396,500 @@ So I watched a few minutes of the video. I was glad to see that I seem to be off
     # declare winner
     # play again?
   end
+#+END_SRC
+
+The video also helped me think about how to implement my *hand_choice* methods for the players. Essentially, I refactored the methods I used in the procedural version, but updated them to work with the OOP version.
+
+Here's how they looked in the procedural version:
+
+#+name: procedural_hand_choice
+#+BEGIN_SRC ruby
+ # player chooses
+  begin
+    puts "Please choose [r] for Rock, [p] for Paper, or [s] for Scissors."
+    user_choice = gets.chomp.downcase
+  end until CHOICES.keys.include?(user_choice)
+  
+  # the computer chooses
+  computer_choice = CHOICES.keys.sample
+#+END_SRC
+
+#+name: oop_hand_choice
+#+BEGIN_SRC ruby
+  # player chooses
+  def hand_choice
+    begin
+      puts "Please choose [r] for Rock, [p] for Paper, or [s] for Scissors."
+      self.choice = gets.chomp.downcase
+    end until CHOICES.keys.include?(self.choice)
+  end  
+  # the computer chooses
+  def hand_choice
+    self.choice = Game::CHOICES.keys.sample
+  end
+#+END_SRC
+
+In my procedural version, I used 'user_choice' and 'computer_choice', but for the OOP, using one 'hand_choice', like the video does, makes sense, so I stole that idea. :)
+
+It's time to put this together, and test it. To do that, I'll need to instantiate players, and add a basic game flow to the *Game* class...
+
+*File:* [[oop_janken/oop_janken_test1.rb]]
+#+BEGIN_SRC ruby :tangle oop_janken/oop_janken_test1.rb
+  # My first OOP Janken test
+
+  class Player
+    attr_accessor :choice
+    attr_reader :name
+    
+    def initialize(name)
+      @name = name
+    end
+  end
+
+  class HumanPlayer < Player
+    def hand_choice
+      begin
+        puts "Please choose [r] for Rock, [p] for Paper, or [s] for Scissors."
+        self.choice = gets.chomp.downcase
+      end until CHOICES.keys.include?(self.choice)
+    end
+  end
+
+  class ComputerPlayer < Player
+    def hand_choice
+      self.choice = Game::CHOICES.keys.sample
+    end
+  end
+
+  class Hand
+    attr_accessor :rock, :paper, :scissors
+
+    def initialize(rock, paper, scissors)
+      @rock = rock
+      @paper = paper
+      @scissor = scissor
+    end
+  end
+
+  class Game
+    CHOICES = {'r' => 'Rock', 'p' => 'Paper', 's' => 'Scissors' }
+
+    attr_reader :player, :computer
+    
+    def initialize
+      @player = HumanPlayer.new("Andrew")
+      @computer = ComputerPlayer.new("Computer")
+    end
+    
+    def Play
+      puts "Let's play 'Rock, Paper, Scissors!'"
+      # user_choice
+      player.pick_hand
+      # computer_choice
+      computer.pick_hand
+      # check_for_winner
+      puts player
+      puts computer
+      # declare winner
+      # play again?
+    end
+  end
+
+  Game = Game.new.play
+
+  #  LocalWords:  ComputerPlayer
+
+#+END_SRC
+
+And here is the output:
+
+
+#+BEGIN_SRC sh
+小A曰:ruby oop_janken_test1.rb 
+oop_janken_test1.rb:43:in `initialize': wrong number of arguments (0 for 2) (ArgumentError)
+	from oop_janken_test1.rb:63:in `new'
+	from oop_janken_test1.rb:63:in `<main>'
+#+END_SRC
+
+The problem is with the *player* and *computer* arguments here:
+
+#+BEGIN_SRC ruby
+    def initialize(player, computer) 
+#      @player = HumanPlayer.new("Andrew")
+#      @computer = ComputerPlayer.new("Computer")
+#    end
+#+END_SRC
+
+If I remove them, like this:
+
+#+BEGIN_SRC ruby
+  def initialize()
+    @player = HumanPlayer.new("Andrew")
+    @computer = ComputerPlayer.new("Computer")
+  end
+#+END_SRC
+
+It should remove the error. Because this is Ruby, I can even omit the empty parentheses!
+#+BEGIN_SRC ruby
+  def initialize
+    @player = HumanPlayer.new("Andrew")
+    @computer = ComputerPlayer.new("Computer")
+  end
+#+END_SRC
+
+But now when I run it, I get a new error:
+
+#+BEGIN_SRC sh
+小A曰:ruby oop_janken_test1.rb 
+oop_janken_test1.rb:63:in `<main>': undefined method `play' for #<Game:0x007fb54b87ca50> (NoMethodError)
+#+END_SRC
+
+The *play* method is undefined. Let's fix that.
+
+Look at the *Game* class. Can you spot the error?
+#+BEGIN_SRC ruby
+class Game
+  CHOICES = {'r' => 'Rock', 'p' => 'Paper', 's' => 'Scissors' }
+
+  attr_reader :player, :computer
+  
+  def initialize
+    @player = HumanPlayer.new("Andrew")
+    @computer = ComputerPlayer.new("Computer")
+  end
+  
+  def Play
+    puts "Let's play 'Rock, Paper, Scissors!'"
+    # user_choice
+    player.pick_hand
+    # computer_choice
+    computer.pick_hand
+    # check_for_winner
+    puts player
+    puts computer
+    # declare winner
+    # play again?
+  end
+end
+
+#+END_SRC
+
+Herein lies the value of testing. It's a simple error. Look at the line where I define the *play* method. I've wrote 'def *Play*' instead of 'def *play*', and that confused the compiler (methods should be snake_case, and classes should use CamelCase).
+
+We'll call this my 'second test'...
+
+*File:* [[oop_janken/oop_janken_test2.rb]]
+#+BEGIN_SRC ruby :tangle oop_janken/oop_janken_test2.rb
+  # My second OOP Janken test
+
+  class Player
+    attr_accessor :choice
+    attr_reader :name
+    
+    def initialize(name)
+      @name = name
+    end
+  end
+
+  class HumanPlayer < Player
+    def hand_choice
+      begin
+        puts "Please choose [r] for Rock, [p] for Paper, or [s] for Scissors."
+        self.choice = gets.chomp.downcase
+      end until CHOICES.keys.include?(choice)
+    end
+  end
+
+  class ComputerPlayer < Player
+    def hand_choice
+      self.choice = Game::CHOICES.keys.sample
+    end
+  end
+
+  class Hand
+    attr_accessor :rock, :paper, :scissors
+
+    def initialize(rock, paper, scissors)
+      @rock = rock
+      @paper = paper
+      @scissor = scissor
+    end
+  end
+
+  class Game
+    CHOICES = {'r' => 'Rock', 'p' => 'Paper', 's' => 'Scissors' }
+
+    attr_reader :player, :computer
+    
+    def initialize
+      @player = HumanPlayer.new("Andrew")
+      @computer = ComputerPlayer.new("Computer")
+    end
+    
+    def play
+      puts "Let's play 'Rock, Paper, Scissors!'"
+      # loop until there is a winner
+      # user_choice
+      player.choice
+      # computer_choice
+      computer.choice
+      # check_for_winner
+      puts player
+      puts computer
+      # declare winner
+      # play again?
+    end
+  end
+
+  game = Game.new.play
+
+#+END_SRC
+
+And here is the output:
+
+#+BEGIN_SRC sh
+小A曰:ruby oop_janken_test2.rb 
+Let's play 'Rock, Paper, Scissors!'
+#<HumanPlayer:0x007fbc1a9203f0>
+#<ComputerPlayer:0x007fbc1a9203a0>
+#+END_SRC
+
+Success!
+
+Now, I can work on building the game play...
+
+Looking at this part:
+#+BEGIN_SRC ruby
+  def play
+    puts "Let's play 'Rock, Paper, Scissors!'"
+
+    player.choice
+    computer.choice
+
+    puts player
+    puts computer
+  end
+#+END_SRC
+
+It's clear that when I send the 'puts player' or 'puts computer' message, Ruby returns the 'player' and 'computer' object's locations on my filesystem. 
+
+To change that, I can add a 'to_s' method that prints out what each player chose.
+
+*File:* [[oop_janken/oop_janken_test3.rb]]
+#+BEGIN_SRC ruby :tangle oop_janken/oop_janken_test3.rb
+  # oop_janken/oop_janken_test3.rb
+  class Player
+    attr_accessor :choice
+    attr_reader :name
+    
+    def initialize(name)
+      @name = name
+      @choice = choice
+    end
+
+    def to_s
+      puts "#{name} threw a #{choice}!"
+    end
+  end
+
+  class HumanPlayer < Player
+    def hand_choice
+      begin
+        puts "Please choose [r] for Rock, [p] for Paper, or [s] for Scissors."
+        self.choice = gets.chomp.downcase
+      end until Game::tCHOICES.keys.include?(choice)
+    end
+  end
+
+  class ComputerPlayer < Player
+    def hand_choice
+      self.choice = Game::CHOICES.keys.sample
+    end
+  end
+
+  class Hand
+    attr_accessor :rock, :paper, :scissors
+
+    def initialize(rock, paper, scissors)
+      @rock = rock
+      @paper = paper
+      @scissor = scissor
+    end
+  end
+
+  class Game
+    CHOICES = {'r' => 'Rock', 'p' => 'Paper', 's' => 'Scissors' }
+
+    attr_reader :player, :computer
+    
+    def initialize
+      @player = HumanPlayer.new("Andrew")
+      @computer = ComputerPlayer.new("Computer")
+    end
+    
+    def determine_winner
+      if player.choice == computer.choice
+        puts "It's a tie!"
+      elsif (player.choice == 'r' && computer.choice == 's') || (player.choice == 'p' && computer.choice == 'r') || (player.choice == 's' && computer.choice == 'p')
+        display_winning_message(player.choice)
+        puts "You win!"
+      else
+        display_losing_message(player.choice)
+        puts "Sorry, you lose..."
+      end
+    end
+
+    def play
+      puts "Let's play 'Rock, Paper, Scissors!'"
+      player.choice
+      computer.choice
+
+      puts player
+      puts computer
+    end
+  end
+
+  game = Game.new.play
+
+#+END_SRC
+
+I watched the rest of the solution video, which gave me some ideas, but I wanted the result to be more like what I did with the procedural version. I took another at my original code. I ended up removing the *Hand* class, and refactoring most of my code from the procedural version, and I came up with a solution that remains true to my take on the game, while being object-oriented!
+
+Here's what I came up with:
+
+*File:* [[oop_janken/oop_rps.rb]] (This is an Object-oriented refactoring of the procedural version, here: [[https://github.com/XiaoA/tealeaf-course1-week1/blob/master/rock_paper_scissors_v2.rb]])
+
+#+BEGIN_SRC ruby :tangle oop_janken/oop_rps.rb
+  # oop_janken/oop_rps.rb
+
+  # Requirements:
+  # The first step is to think about the specifications and requirements for the application, in plain English.
+
+  # This version will be a two-player game. In Japan, when people play Janken, they can play with more than two people, but in the US, it's usually limited to two people.
+  # - Player One
+  # - Computer
+
+  # There are three choices:
+  # 1. Rock
+  # 2. Paper
+  # 3. Scissors
+
+  # There is a defined hierarchy of winner vs. loser:
+  # 1. Rock > Scissors
+  # 2. Paper > Rock
+  # 3. Scissors > Paper
+  # 4. Tie => Go again
+
+  # I'll need to record each player's choice, and determin who won, using the hierarchy defined above.
+
+  # Implementation Ideas
+  # 1. Classes
+  # - Player
+  # - Hand
+
+  # 2. Game Play
+  # - Each Player gets to choose
+  # - The winner is announced
+  # - Play again?
+
+  # 3. Bonus Features I could implement (but probably won't for the sake of simplicity)
+  # - Keeping Score
+  # - Betting
+
+  class Player
+    attr_accessor :hand
+    attr_reader :name
+    
+    def initialize(name)
+      @name = name
+    end
+
+    def to_s
+      puts "#{name} threw a #{hand}!"
+    end
+  end
+
+  class HumanPlayer < Player
+    def hand_choice
+      begin
+        puts "Please choose [r] for Rock, [p] for Paper, or [s] for Scissors."
+        choice = gets.chomp.downcase
+      end until Game::CHOICES.keys.include?(choice)
+      self.hand = choice
+    end
+  end
+
+  class ComputerPlayer < Player
+    def hand_choice
+      self.hand = Game::CHOICES.keys.sample
+    end
+  end
+
+  class Game
+    CHOICES = {'r' => 'rock', 'p' => 'paper', 's' => 'scissors' }
+
+    attr_reader :player, :computer
+    
+    def initialize
+      @player = HumanPlayer.new("Andrew")
+      @computer = ComputerPlayer.new("Computer")
+    end
+    
+    def display_winning_message(winning_choice)
+      case winning_choice
+      when 'r'
+        puts "You: Rock | Me: Scissors"
+      when 'p'
+        puts "You: Paper | Me: Rock"
+      when 's'
+        puts "You: Scissors | Me: Paper"
+      end
+    end
+
+    def display_losing_message(losing_choice)
+      case losing_choice
+      when 'r'
+        puts "You: Rock | Me: Paper"
+      when 'p' 
+        puts "You: Paper | Me: Scissors"
+      when 's'
+        puts "You: Scissors | Me: Rock"
+      end
+    end
+
+    def determine_winner
+      if player.hand == computer.hand
+        puts "It's a tie!"
+      elsif (player.hand == 'r' && computer.hand == 's') || (player.hand == 'p' && computer.hand == 'r') || (player.hand == 's' && computer.hand == 'p')
+        display_winning_message(player.hand)
+        puts "You win!"
+      else
+        display_losing_message(player.hand)
+        puts "Sorry, you lose..."
+      end
+    end
+
+    def play_again
+      puts "Would you like to play again? (y/n)"
+      gets.chomp.downcase
+    end
+    
+    def play
+      puts "Let's play 'Rock, Paper, Scissors!'"
+      loop do
+        begin
+          player.hand_choice
+          computer.hand_choice
+          determine_winner
+          break if play_again != 'y'
+        end
+      end
+      puts "Thanks for playing!"
+      sleep 0.5
+      system 'clear'
+    end
+  end
+
+  Game.new.play
 
 #+END_SRC
