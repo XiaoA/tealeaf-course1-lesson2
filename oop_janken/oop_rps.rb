@@ -92,10 +92,16 @@ class Game
     end
   end
 
+  def player_has_winning_choice?
+    (player.hand == 'r' && computer.hand == 's') || \
+    (player.hand == 'p' && computer.hand == 'r') || \
+    (player.hand == 's' && computer.hand == 'p')
+  end
+
   def determine_winner
     if player.hand == computer.hand
       puts "It's a tie!"
-    elsif (player.hand == 'r' && computer.hand == 's') || (player.hand == 'p' && computer.hand == 'r') || (player.hand == 's' && computer.hand == 'p')
+    elsif player_has_winning_choice?
       display_winning_message(player.hand)
       puts "You win!"
     else

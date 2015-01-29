@@ -3853,10 +3853,16 @@ Here's what I came up with:
       end
     end
 
+    def player_has_winning_choice?
+      (player.hand == 'r' && computer.hand == 's') || \
+      (player.hand == 'p' && computer.hand == 'r') || \
+      (player.hand == 's' && computer.hand == 'p')
+    end
+
     def determine_winner
       if player.hand == computer.hand
         puts "It's a tie!"
-      elsif (player.hand == 'r' && computer.hand == 's') || (player.hand == 'p' && computer.hand == 'r') || (player.hand == 's' && computer.hand == 'p')
+      elsif player_has_winning_choice?
         display_winning_message(player.hand)
         puts "You win!"
       else
@@ -4068,4 +4074,39 @@ First, I'll draw the board...
 
 #+END_SRC
 
-And that worked!
+And that worked! Next, I'll add in more of the 'Board' methods I set up before.
+
+#+BEGIN_SRC ruby
+  class Board
+    WINNING_LINES = [[1, 2, 3], [1, 5, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [3, 5, 7], [4, 5, 6], [7, 8, 9]]
+
+    attr_accessor :board
+
+    def initialize
+      @board = board
+    end
+
+    def board
+      board = {1 => " ", 2 => " ", 3 => " ", 4 => " ", 5 => " ", 6 => " ", 7 => " ", 8 => " ", 9 => " "}
+    end
+    
+    def draw_board
+      system 'clear'
+      puts "      |      |      "
+      puts "#{board[1]}     |#{board[2]}     |#{board[3]}     "
+      puts "------+------+-------"
+      puts "      |      |      "
+      puts "#{board[4]}     |#{board[5]}     |#{board[6]}     "
+      puts "------+------+-------"
+      puts "      |      |      "
+      puts "#{board[7]}     |#{board[8]}     |#{board[9]}     "
+    end
+  end
+
+  def empty_squares
+    board.select {|k, v| v ==  " " }.keys
+  end
+
+  Board.new.draw_board
+#+END_SRC
+
