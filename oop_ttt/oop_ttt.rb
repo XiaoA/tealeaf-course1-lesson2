@@ -1,5 +1,50 @@
 # A Simple Tic-Tac-Toe Game in Ruby, refactored for OOP
 
+# Implementation Notes/Brainstorming...
+# 
+# * What is Tic-Tac-Toe?
+# - A game with two players, and 9 board positions
+# - One player is assigned "X"; one player is assigned "Y"
+# - The object is to get three of your "X" or "Y" marks in a row, while preventing the other player from doing the same.
+
+# * Things (could become classes)
+# - board
+# - pieces/markers
+# - squares
+# - player(s)
+
+# * Actions (could become methods or modules)
+# - attack
+# - defend (block)
+# - draw the board
+
+# * Potential Features
+# - AI that blocks the third in a 'two-in-a-row' scenario
+# - Play again?
+# - Store names/scores/bets?
+
+# * Anything else to consider?
+
+# * Implementation Outline
+# - Board
+#   + draw board
+#   + empty squares?
+#   + marked squares?
+# - Square
+#   + mark
+#   + occupied?
+# - Player
+#   + name
+#   + "X" vs. "0"
+#   + attack
+#   + defend
+# - Game
+#   + player 1 place mark 
+#   + player 2 place mark
+#   + check for winner
+#   + declare result
+#   + play again?
+
 class Board
   WINNING_LINES = [[1,2,3], [4,5,6], [7,8,9], [1,4,7], [2,5,8], [3,6,9], [1,5,9], [3,5,7]]
 
@@ -79,7 +124,6 @@ class Square
 end
 
 class Game
-  
   def initialize
     @board = Board.new
     @human = Player.new("Andrew", "X")
